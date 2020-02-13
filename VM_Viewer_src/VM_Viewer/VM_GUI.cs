@@ -21,9 +21,11 @@ namespace VM_Viewer {
           LauchTool oLDrive = null;
           LauchTool oLoadedDrive = null;
           LauchTool oInstallDriver = null;
+          LauchTool oKvmAction = null;
 
         string sConvertToFile = "";
         string sVM_Path = "";
+        string sLauched_Path = "";
 
         LauchTool oLFolder = null;
         ConfigMng oConfig;
@@ -119,30 +121,44 @@ namespace VM_Viewer {
                 fOut(null, "Error >> File not exist: "+  _sPath);
             }
 
-
               fStartLaodingLauch();
+              sLauched_Path = _sPath;
 
+
+            if(!cbFullScreen.Checked) { //Normal Mode
                 oLauch = new LauchTool();
-
-                //  	oLauch.dOut = new LauchTool.dIOut(fOut);
+           
+                //oLauch.dOut = new LauchTool.dIOut(fOut);
            	    oLauch.dExit = new LauchTool.dIExit(fLauchClose);
                 oLauch.oFromWindow = this;
                 oLauch.bOutput = false;
                 oLauch.bStartMinimised  =true;
-                // oLauch.UseShellExecute = true;
-                //oLauch.fLauchExe(@"C:\Program Files (x86)\VMware\VMware Player\vmplayer.exe", "-X " + "\"E:/MyVM/CpcDos/My_Cpcdos OSx.vmx\"");
+
+                if(ckbAdmin.Checked) {
+                    // oLauch.bRunAsAdmin = true;
+                }
+                 fOut(null, "Lauch[vmplayer]: "+  _sPath);
+                oLauch.fLauchExe(sVM_Path + "vmplayer.exe", " " + "\""  +_sPath + "\"");
+
+            }else { //FULLSceen Mode
+                oLauch = new LauchTool();
+           
+                //oLauch.dOut = new LauchTool.dIOut(fOut);
+           	    oLauch.dExit = new LauchTool.dIExit(fLauchClose);
+               // oLauch.oFromWindow = this;
+                oLauch.bOutput = false;
+               // oLauch.bStartMinimised  =true;
 
                 if(ckbAdmin.Checked) {
                     // oLauch.bRunAsAdmin = true;
                 }
 
-              
-                // oLauch.bRunInThread = false;
-      
-                oLauch.fLauchExe(sVM_Path + "vmplayer.exe", " " + "\""  +_sPath + "\"");
-                //oLauch.fLauchExe(sVM_Path + "vmplayer-kvm.exe", " " + "\""  +_sPath + "\"");
-                
-                    //ovftool.exe --lax source.ova destination.vmx
+                fOut(null, "Lauch[vmplayer-kvm]: "+  _sPath);
+                oLauch.fLauchExe(sVM_Path + "vmware-kvm.exe", " " + "\""  +_sPath + "\"");
+            }
+
+            //oLauch.fLauchExe(sVM_Path + "vmplayer-kvm.exe", " " + "\""  +_sPath + "\"");
+            //ovftool.exe --lax source.ova destination.vmx
 
         }
 
@@ -832,6 +848,41 @@ namespace VM_Viewer {
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btStop_Click(object sender, EventArgs e)
+        {
+            oKvmAction = new LauchTool();
+            oKvmAction.bOutput = false;
+           // oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--exit " + "\""  +sLauched_Path + "\"");
+           oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--power-off " + "\""  +sLauched_Path + "\"");
+
+
+        }
+
+        private void btPause_Click(object sender, EventArgs e)
+        {
+            oKvmAction = new LauchTool();
+            oKvmAction.bOutput = false;
+           // oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--exit " + "\""  +sLauched_Path + "\"");
+           oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--suspend " + "\""  +sLauched_Path + "\"");
+        }
+
+        private void btConfig_Click(object sender, EventArgs e)
+        {
+            fStopLaodingLauch();
+            oKvmAction = new LauchTool();
+            oKvmAction.bOutput = false;
+           // oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--exit " + "\""  +sLauched_Path + "\"");
+           oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--preferences " + "\""  +sLauched_Path + "\"");
+            //--detach ??
+            //--reset
+            //--exit
         }
     }
 }

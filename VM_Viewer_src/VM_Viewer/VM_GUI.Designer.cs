@@ -32,7 +32,11 @@
             this.cbDrive = new System.Windows.Forms.ComboBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.cbOpen = new System.Windows.Forms.CheckBox();
+            this.cbFullScreen = new System.Windows.Forms.CheckBox();
+            this.btPause = new System.Windows.Forms.Button();
+            this.btStop = new System.Windows.Forms.Button();
             this.rtOutput = new System.Windows.Forms.RichTextBox();
+            this.btConfig = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnLauch
@@ -60,7 +64,7 @@
             this.ckbAdmin.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ckbAdmin.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ckbAdmin.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.ckbAdmin.Location = new System.Drawing.Point(12, 61);
+            this.ckbAdmin.Location = new System.Drawing.Point(20, 10);
             this.ckbAdmin.Name = "ckbAdmin";
             this.ckbAdmin.Size = new System.Drawing.Size(102, 18);
             this.ckbAdmin.TabIndex = 1;
@@ -161,6 +165,55 @@
             this.cbOpen.Text = "Open on Mount";
             this.cbOpen.UseVisualStyleBackColor = true;
             // 
+            // cbFullScreen
+            // 
+            this.cbFullScreen.AutoSize = true;
+            this.cbFullScreen.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbFullScreen.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.cbFullScreen.Location = new System.Drawing.Point(20, 61);
+            this.cbFullScreen.Name = "cbFullScreen";
+            this.cbFullScreen.Size = new System.Drawing.Size(121, 18);
+            this.cbFullScreen.TabIndex = 10;
+            this.cbFullScreen.Text = "Full Screen Mode";
+            this.cbFullScreen.UseVisualStyleBackColor = true;
+            this.cbFullScreen.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // btPause
+            // 
+            this.btPause.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btPause.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btPause.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+            this.btPause.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.btPause.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DimGray;
+            this.btPause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btPause.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btPause.ForeColor = System.Drawing.SystemColors.Control;
+            this.btPause.Location = new System.Drawing.Point(55, 168);
+            this.btPause.Name = "btPause";
+            this.btPause.Size = new System.Drawing.Size(103, 39);
+            this.btPause.TabIndex = 11;
+            this.btPause.Text = "Pause";
+            this.btPause.UseVisualStyleBackColor = false;
+            this.btPause.Click += new System.EventHandler(this.btPause_Click);
+            // 
+            // btStop
+            // 
+            this.btStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btStop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btStop.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+            this.btStop.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.btStop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DimGray;
+            this.btStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btStop.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btStop.ForeColor = System.Drawing.SystemColors.Control;
+            this.btStop.Location = new System.Drawing.Point(182, 168);
+            this.btStop.Name = "btStop";
+            this.btStop.Size = new System.Drawing.Size(103, 39);
+            this.btStop.TabIndex = 12;
+            this.btStop.Text = "Stop";
+            this.btStop.UseVisualStyleBackColor = false;
+            this.btStop.Click += new System.EventHandler(this.btStop_Click);
+            // 
             // rtOutput
             // 
             this.rtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -168,14 +221,32 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rtOutput.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.rtOutput.ForeColor = System.Drawing.SystemColors.Info;
-            this.rtOutput.Location = new System.Drawing.Point(12, 157);
+            this.rtOutput.Location = new System.Drawing.Point(12, 213);
             this.rtOutput.Name = "rtOutput";
             this.rtOutput.ReadOnly = true;
             this.rtOutput.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.rtOutput.Size = new System.Drawing.Size(653, 312);
+            this.rtOutput.Size = new System.Drawing.Size(653, 256);
             this.rtOutput.TabIndex = 9;
             this.rtOutput.Text = "";
             this.rtOutput.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            // 
+            // btConfig
+            // 
+            this.btConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btConfig.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btConfig.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+            this.btConfig.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.btConfig.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DimGray;
+            this.btConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btConfig.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btConfig.ForeColor = System.Drawing.SystemColors.Control;
+            this.btConfig.Location = new System.Drawing.Point(305, 169);
+            this.btConfig.Name = "btConfig";
+            this.btConfig.Size = new System.Drawing.Size(103, 39);
+            this.btConfig.TabIndex = 13;
+            this.btConfig.Text = "Config";
+            this.btConfig.UseVisualStyleBackColor = false;
+            this.btConfig.Click += new System.EventHandler(this.btConfig_Click);
             // 
             // VM_GUI
             // 
@@ -183,6 +254,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(677, 480);
+            this.Controls.Add(this.btConfig);
+            this.Controls.Add(this.btStop);
+            this.Controls.Add(this.btPause);
+            this.Controls.Add(this.cbFullScreen);
             this.Controls.Add(this.cbOpen);
             this.Controls.Add(this.cbDrive);
             this.Controls.Add(this.cbPath);
@@ -218,7 +293,11 @@
         private System.Windows.Forms.ComboBox cbDrive;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.CheckBox cbOpen;
+        private System.Windows.Forms.CheckBox cbFullScreen;
+        private System.Windows.Forms.Button btPause;
+        private System.Windows.Forms.Button btStop;
         private System.Windows.Forms.RichTextBox rtOutput;
+        private System.Windows.Forms.Button btConfig;
     }
 }
 
