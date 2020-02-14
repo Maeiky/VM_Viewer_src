@@ -232,7 +232,7 @@ namespace VM_Viewer {
                  ConfigMng.oConfig.fAddRecent(cbPath.Text);
             }
             string _sType = Path.GetFileName(cbPath.Text);
-            _sType = _sType.Substring(_sType.IndexOf('.')+1);
+            _sType = _sType.Substring(_sType.LastIndexOf('.')+1);
             Console.WriteLine("_sType :" +  _sType);
             switch (_sType) {
                 case "vmx":
