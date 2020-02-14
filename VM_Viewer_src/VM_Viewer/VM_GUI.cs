@@ -56,17 +56,7 @@ namespace VM_Viewer {
         public bool bLauching = false;
         public Color oOriColor;
         public string sOriText;
-        private void fStopLaodingLauch()
-        {
-            this.BeginInvoke((MethodInvoker)delegate {
-                bLauching = false;
-                btnLauch.Enabled = true;
-                btnEdit.Enabled = true;
-                btnLauch.BackColor = oOriColor;
-                btnLauch.Text = sOriText;
-
-            });
-        }
+       
         private void fStartLaodingLauch(){
             if(bLauching) {return; }
             btnLauch.Enabled = false;
@@ -101,8 +91,31 @@ namespace VM_Viewer {
 
             });
             bw.RunWorkerAsync();
-        }
 
+            
+            btConfig.Enabled = false;
+            btPause.Enabled =true;
+            btStop.Enabled =true;
+            btnReset.Enabled = true;
+
+
+        }
+        private void fStopLaodingLauch()
+        {
+            this.BeginInvoke((MethodInvoker)delegate {
+                bLauching = false;
+                btnLauch.Enabled = true;
+                btnEdit.Enabled = true;
+                btnLauch.BackColor = oOriColor;
+                btnLauch.Text = sOriText;
+
+                btConfig.Enabled =true;
+                btPause.Enabled =false;
+                btStop.Enabled =false;
+                btnReset.Enabled = false;
+
+            });
+        }
 
         private void fConvertFinish(LauchTool _oTool){
 
@@ -126,6 +139,7 @@ namespace VM_Viewer {
 
 
             if(!cbFullScreen.Checked) { //Normal Mode
+                bFullScreenMode = false;
                 oLauch = new LauchTool();
            
                 //oLauch.dOut = new LauchTool.dIOut(fOut);
@@ -141,6 +155,7 @@ namespace VM_Viewer {
                 oLauch.fLauchExe(sVM_Path + "vmplayer.exe", " " + "\""  +_sPath + "\"");
 
             }else { //FULLSceen Mode
+                bFullScreenMode = true;
                 oLauch = new LauchTool();
            
                 //oLauch.dOut = new LauchTool.dIOut(fOut);
@@ -162,8 +177,8 @@ namespace VM_Viewer {
 
         }
 
-        private void btnLauch_Click(object sender, EventArgs e) {
-            string _sVM_Path = "";
+        public void fFound_VM_Ware(bool _bDialog = true) {
+                 string _sVM_Path = "";
             if(File.Exists(@"C:\Program Files (x86)\VMware\VMware Player\vmplayer.exe")) {
                 _sVM_Path= @"C:\Program Files (x86)\VMware\VMware Player\vmplayer.exe";
             }
@@ -171,7 +186,7 @@ namespace VM_Viewer {
                 _sVM_Path=   @"C:\Program Files\VMware\VMware Player\vmplayer.exe";
             }
 
-            if(_sVM_Path == "") {
+            if(_sVM_Path == "" && _bDialog) {
                fOut(null, "Please install VMware Workstation player (free)");
 
                DialogResult dr = MessageBox.Show("Please install VMware Workstation player (free)",  "Install Player", MessageBoxButtons.YesNo);
@@ -190,8 +205,13 @@ namespace VM_Viewer {
 
              sVM_Path = Path.GetDirectoryName(_sVM_Path) + "\\";
 
+        }
 
 
+
+        private void btnLauch_Click(object sender, EventArgs e) {
+
+           fFound_VM_Ware();
 
             /*
               Console.WriteLine("Path :  "  +  cbPath.Text);
@@ -281,7 +301,17 @@ namespace VM_Viewer {
              });*/
         }
 
+          Point rtStartPos;
+          Size rtStartSize;
          private void VM_GUI_Load(object sender, EventArgs e) {
+             ///////Ini State///
+
+             oOriColor = btnLauch.BackColor;
+             sOriText = btnLauch.Text;
+             fStopLaodingLauch();
+             fUpdateRtState();
+            /////////////////////
+
             oConfig = new ConfigMng();
             oConfig.LoadConfig(this);
             if (ConfigMng.bLoadFailed)
@@ -524,6 +554,8 @@ namespace VM_Viewer {
         }
         public bool NeedRestore = false;
         FormWindowState LastWindowState = FormWindowState.Minimized;
+        private bool bFullScreenMode;
+
         public bool fIsMaximizeChange()
         {
 
@@ -571,9 +603,12 @@ namespace VM_Viewer {
             if (oLauch != null)
             {
                 oLauch.bExeLauched = false;
-                if (!oLauch.ExeProcess.HasExited)
-                {
-                    oLauch.ExeProcess.CloseMainWindow();
+                if (!oLauch.ExeProcess.HasExited) {
+                    if(bFullScreenMode) {
+                        fCloseFullScreen();
+                    }else{
+                        oLauch.ExeProcess.CloseMainWindow();
+                    }
                     //  oLauch.ExeProcess.WaitForExit(10);
                     e.Cancel = true;
                 }
@@ -584,6 +619,7 @@ namespace VM_Viewer {
             fUnMount(sMountDirectory);
         }
 
+    
         internal void fRefresh()
         {
             /*
@@ -659,6 +695,7 @@ namespace VM_Viewer {
                     {
                         if (btnEdit.Text != "UnMount")
                         {
+                           //  btPause_Click(null,null);
                             string _sDirectory = Path.GetDirectoryName(_sPath) + "\\" + Path.GetFileNameWithoutExtension(_sPath) + "_Mount";
                             if (!Directory.Exists(_sDirectory)){
                                 Directory.CreateDirectory(_sDirectory);
@@ -859,30 +896,64 @@ namespace VM_Viewer {
         {
             oKvmAction = new LauchTool();
             oKvmAction.bOutput = false;
-           // oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--exit " + "\""  +sLauched_Path + "\"");
-           oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--power-off " + "\""  +sLauched_Path + "\"");
-
+            oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--power-off " + "\""  +sLauched_Path + "\"");
+            fStopLaodingLauch();
 
         }
 
         private void btPause_Click(object sender, EventArgs e)
         {
+            //fFound_VM_Ware(false);
             oKvmAction = new LauchTool();
             oKvmAction.bOutput = false;
-           // oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--exit " + "\""  +sLauched_Path + "\"");
            oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--suspend " + "\""  +sLauched_Path + "\"");
+            fStopLaodingLauch();
         }
 
         private void btConfig_Click(object sender, EventArgs e)
         {
-            fStopLaodingLauch();
+             fFound_VM_Ware();
+           // fStopLaodingLauch();
             oKvmAction = new LauchTool();
             oKvmAction.bOutput = false;
-           // oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--exit " + "\""  +sLauched_Path + "\"");
            oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--preferences " + "\""  +sLauched_Path + "\"");
             //--detach ??
             //--reset
             //--exit
         }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+           oKvmAction = new LauchTool();
+           oKvmAction.bOutput = false;
+           oKvmAction.fLauchExe(sVM_Path + "vmware-kvm.exe", "--reset " + "\""  +sLauched_Path + "\"");
+          //--exit can cause problem
+
+        }
+
+        private void fCloseFullScreen(){
+            btStop_Click(null, null); //Maybe click?
+        }
+
+        private void cbFullScreen_CheckedChanged(object sender, EventArgs e) {
+            fUpdateRtState();
+        }
+
+
+        void fUpdateRtState() {
+            rtStartPos =  rtOutput.Location;
+            rtStartSize =  rtOutput.Size;
+            int _nSize = 75;
+            if(cbFullScreen.Checked) {
+                 gbFullScreen.Visible = true;
+                rtOutput.Size = new Size( rtStartSize.Width , rtStartSize.Height - _nSize);
+                rtOutput.Location = new Point(rtStartPos.X, rtStartPos.Y         + _nSize);
+            }else{
+                gbFullScreen.Visible = false;
+                rtOutput.Size = new Size( rtStartSize.Width , rtStartSize.Height + _nSize);
+                rtOutput.Location = new Point(rtStartPos.X, rtStartPos.Y          - _nSize);
+            }
+        }
+
     }
 }

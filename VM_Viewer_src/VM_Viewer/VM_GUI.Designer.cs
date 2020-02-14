@@ -37,6 +37,9 @@
             this.btStop = new System.Windows.Forms.Button();
             this.rtOutput = new System.Windows.Forms.RichTextBox();
             this.btConfig = new System.Windows.Forms.Button();
+            this.gbFullScreen = new System.Windows.Forms.GroupBox();
+            this.btnReset = new System.Windows.Forms.Button();
+            this.gbFullScreen.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnLauch
@@ -158,7 +161,7 @@
             this.cbOpen.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbOpen.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbOpen.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.cbOpen.Location = new System.Drawing.Point(12, 133);
+            this.cbOpen.Location = new System.Drawing.Point(20, 133);
             this.cbOpen.Name = "cbOpen";
             this.cbOpen.Size = new System.Drawing.Size(110, 18);
             this.cbOpen.TabIndex = 8;
@@ -176,7 +179,7 @@
             this.cbFullScreen.TabIndex = 10;
             this.cbFullScreen.Text = "Full Screen Mode";
             this.cbFullScreen.UseVisualStyleBackColor = true;
-            this.cbFullScreen.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.cbFullScreen.CheckedChanged += new System.EventHandler(this.cbFullScreen_CheckedChanged);
             // 
             // btPause
             // 
@@ -188,7 +191,7 @@
             this.btPause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btPause.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btPause.ForeColor = System.Drawing.SystemColors.Control;
-            this.btPause.Location = new System.Drawing.Point(55, 168);
+            this.btPause.Location = new System.Drawing.Point(316, 16);
             this.btPause.Name = "btPause";
             this.btPause.Size = new System.Drawing.Size(103, 39);
             this.btPause.TabIndex = 11;
@@ -206,7 +209,7 @@
             this.btStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btStop.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btStop.ForeColor = System.Drawing.SystemColors.Control;
-            this.btStop.Location = new System.Drawing.Point(182, 168);
+            this.btStop.Location = new System.Drawing.Point(428, 16);
             this.btStop.Name = "btStop";
             this.btStop.Size = new System.Drawing.Size(103, 39);
             this.btStop.TabIndex = 12;
@@ -221,11 +224,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rtOutput.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.rtOutput.ForeColor = System.Drawing.SystemColors.Info;
-            this.rtOutput.Location = new System.Drawing.Point(12, 213);
+            this.rtOutput.Location = new System.Drawing.Point(12, 238);
             this.rtOutput.Name = "rtOutput";
             this.rtOutput.ReadOnly = true;
             this.rtOutput.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.rtOutput.Size = new System.Drawing.Size(653, 256);
+            this.rtOutput.Size = new System.Drawing.Size(653, 231);
             this.rtOutput.TabIndex = 9;
             this.rtOutput.Text = "";
             this.rtOutput.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
@@ -240,7 +243,7 @@
             this.btConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btConfig.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btConfig.ForeColor = System.Drawing.SystemColors.Control;
-            this.btConfig.Location = new System.Drawing.Point(305, 169);
+            this.btConfig.Location = new System.Drawing.Point(540, 16);
             this.btConfig.Name = "btConfig";
             this.btConfig.Size = new System.Drawing.Size(103, 39);
             this.btConfig.TabIndex = 13;
@@ -248,15 +251,47 @@
             this.btConfig.UseVisualStyleBackColor = false;
             this.btConfig.Click += new System.EventHandler(this.btConfig_Click);
             // 
+            // gbFullScreen
+            // 
+            this.gbFullScreen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbFullScreen.Controls.Add(this.btnReset);
+            this.gbFullScreen.Controls.Add(this.btConfig);
+            this.gbFullScreen.Controls.Add(this.btStop);
+            this.gbFullScreen.Controls.Add(this.btPause);
+            this.gbFullScreen.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbFullScreen.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.gbFullScreen.Location = new System.Drawing.Point(12, 169);
+            this.gbFullScreen.Name = "gbFullScreen";
+            this.gbFullScreen.Size = new System.Drawing.Size(653, 63);
+            this.gbFullScreen.TabIndex = 15;
+            this.gbFullScreen.TabStop = false;
+            this.gbFullScreen.Text = "FullScreen Mode";
+            // 
+            // btnReset
+            // 
+            this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnReset.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+            this.btnReset.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.btnReset.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DimGray;
+            this.btnReset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReset.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReset.ForeColor = System.Drawing.SystemColors.Control;
+            this.btnReset.Location = new System.Drawing.Point(207, 16);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(103, 39);
+            this.btnReset.TabIndex = 14;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = false;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // VM_GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(677, 480);
-            this.Controls.Add(this.btConfig);
-            this.Controls.Add(this.btStop);
-            this.Controls.Add(this.btPause);
             this.Controls.Add(this.cbFullScreen);
             this.Controls.Add(this.cbOpen);
             this.Controls.Add(this.cbDrive);
@@ -267,6 +302,7 @@
             this.Controls.Add(this.btnLauch);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.rtOutput);
+            this.Controls.Add(this.gbFullScreen);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VM_GUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -278,6 +314,7 @@
             this.SizeChanged += new System.EventHandler(this.VM_GUI_SizeChanged);
             this.Move += new System.EventHandler(this.VM_GUI_Move);
             this.Resize += new System.EventHandler(this.VM_GUI_Resize);
+            this.gbFullScreen.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -298,6 +335,8 @@
         private System.Windows.Forms.Button btStop;
         private System.Windows.Forms.RichTextBox rtOutput;
         private System.Windows.Forms.Button btConfig;
+        private System.Windows.Forms.GroupBox gbFullScreen;
+        private System.Windows.Forms.Button btnReset;
     }
 }
 
