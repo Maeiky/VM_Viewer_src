@@ -54,6 +54,7 @@
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\LauchTool.cs" />
     <Compile Include="Utilities\PathHelper.cs" />
+    <Compile Include="Utilities\Str.cs" />
     <Compile Include="VM_GUI.cs">
       <SubType>Form</SubType>
     </Compile>

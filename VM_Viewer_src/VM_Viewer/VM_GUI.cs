@@ -857,14 +857,31 @@ namespace VM_Viewer {
 
                 int _nIndex = 0;
                 int _nFoundIndex = 0;
-                foreach (string _sFile in Directory.GetFiles(_sDir, "*.vmdk", SearchOption.TopDirectoryOnly))
-                {
-                    cbDrive.Items.Add(_sFile);
-                    if (_sLastItem == _sFile)
-                    {
-                        _nFoundIndex = _nIndex;
+
+
+                    
+                foreach (string _sFile in Directory.GetFiles(_sDir, "*.*", SearchOption.TopDirectoryOnly))  {
+                 
+                //string supportedExtensions = "*.vmdk,*.vhd,*.vdi,*.img,*.ima,*.raw,*.vfd";
+               // foreach (string _sFile in Directory.GetFiles(_sDir, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s).ToLower()))) {
+                   string _sExtention = Str.fGetExtention(_sFile);
+                   switch(_sExtention){
+                            case "vmdk":
+                            case "vhd":
+                            case "vdi":
+                            case "img":
+                            case "raw":
+                            case "vfd":
+                                
+                            cbDrive.Items.Add(_sFile);
+                            if (_sLastItem == _sFile)
+                            {
+                                _nFoundIndex = _nIndex;
+                            }
+                            _nIndex++;
+
+                         break;
                     }
-                    _nIndex++;
                 }
                 if (cbDrive.Items.Count > 0)
                 {
