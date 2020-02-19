@@ -225,9 +225,9 @@ namespace VM_Viewer {
 
 
             fUnMount(sMountDirectory);
+            //!!!TODO wait to completly unmont!!!!!
 
             fOut(null, "Lauch: "+  cbPath.Text);
-
             if(File.Exists(cbPath.Text)) {
                  ConfigMng.oConfig.fAddRecent(cbPath.Text);
             }
@@ -377,14 +377,16 @@ namespace VM_Viewer {
 
                 try
                 {
+                  int _nCount = 0;
                     foreach (string _sRecent in ConfigMng.oConfig.aRecent)
                     {
                         if(File.Exists(_sRecent)) {
+                            _nCount++;
                             cbPath.Items.Add(_sRecent);
                         }
 
                         /*
-                         * 
+                            * 
                         ToolStripMenuItem _oNew = new ToolStripMenuItem(_sRecent);
                         _oNew.Tag = _sRecent;
 
@@ -408,7 +410,11 @@ namespace VM_Viewer {
                         _oNew.Click += fRecentClick;
                         */
                     }
-                    cbPath.SelectedIndex = 0;
+                    if(_nCount != 0) {
+                         cbPath.SelectedIndex = 0;
+                    }
+                    
+
                 }
                 catch (Exception e) { Console.WriteLine(e.Message); };
 
@@ -688,13 +694,18 @@ namespace VM_Viewer {
         private void btnEdit_Click(object sender, EventArgs e) {
 
 
+   
            if(WinApi.GetFullPathFromWindows("imdisk.exe") != null) {
 
                     string _sPath = cbDrive.Text;
+               
                     if (File.Exists(_sPath))
                     {
+                
                         if (btnEdit.Text != "UnMount")
                         {
+                            fOut(null, "Mount[DiscUtilsDevio] ");
+
                            //  btPause_Click(null,null);
                             string _sDirectory = Path.GetDirectoryName(_sPath) + "\\" + Path.GetFileNameWithoutExtension(_sPath) + "_Mount";
                             if (!Directory.Exists(_sDirectory)){
@@ -737,6 +748,7 @@ namespace VM_Viewer {
 
                             sMountDirectory = _sDirectory;
                             oLoadedDrive = oLDrive;
+                            fOut(null, "Mount[DiscUtilsDevio]: " + sMountDirectory);
                             // oLauch.bRunInThread = false;
                             // oLDrive.fLauchExe(PathHelper.GetExeDirectory() + @"ImDiskTk/DiscUtilsDevio.exe", "/filename=" + "\"" + _sPath + "\"" + " /mount=Z:");
                             oLDrive.fLauchExe(PathHelper.GetExeDirectory() + @"ImDiskTk/DiscUtilsDevio.exe", "/filename=" + "\"" + _sPath + "\"" + " /mount=\"" + sMountDirectory + "\"");
@@ -758,6 +770,9 @@ namespace VM_Viewer {
                         }else{
                             fUnMount(sMountDirectory);
                         }
+                    }else {
+                        fOut(null, "Error: Drive not exist: \"" + _sPath  + "\"");
+
                     }
 
             }else {
@@ -814,6 +829,7 @@ namespace VM_Viewer {
 
         private void fUnMount(string _sPath, bool _bForce =false)
         {
+
             Console.WriteLine("Try to unmount: " + _sPath);
             if (btnEdit.Text == "UnMount" || _bForce)
             {
@@ -825,24 +841,45 @@ namespace VM_Viewer {
 
          
                 oLDrive.fLauchExe(PathHelper.GetExeDirectory() + @"ImDiskTk/ImDisk-Dlg.exe", "RM \"" + _sPath + "\"");
-                try
-                {
-                    while (oLDrive.bExeLauch || oLoadedDrive.bExeLauch)
-                    {
-                        Thread.Sleep(1);
-                    }
-                    if(_bForce)
-                    {
-                        Thread.Sleep(500);
-                    }
-                    Directory.Delete(_sPath);
+
+
+                try {
+                    /////// Delete directory  ///////////
+                    BackgroundWorker bw = new BackgroundWorker();
+					bw.DoWork += new DoWorkEventHandler(
+					delegate(object o, DoWorkEventArgs args) {
+
+                            while (oLDrive.bExeLauch || oLoadedDrive.bExeLauch)
+                            {
+                                Thread.Sleep(1);
+                            }
+                            if(_bForce)
+                            {
+                                Thread.Sleep(500);
+                            }
+                            if(File.Exists(_sPath)) {
+                              Directory.Delete(_sPath);
+                            }
+                            fFinishUnmount();
+					});
+					bw.RunWorkerAsync();
+                    //////////////////////////////////////
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex.Message);
                 }
-                btnEdit.Text = "Edit Drive";
+
+               
+              //  btnEdit.Text = "Edit Drive";
             }
+        }
+
+        public void fFinishUnmount() {
+             this.BeginInvoke((MethodInvoker)delegate {
+               btnEdit.Text = "Edit Drive";
+                 btnEdit.Enabled = true;
+             });
         }
 
         private void cbPath_TextChanged(object sender, EventArgs e)
