@@ -207,25 +207,11 @@ namespace VM_Viewer {
 
         }
 
+        public void fLauch()
+        {
 
-
-        private void btnLauch_Click(object sender, EventArgs e) {
-
-           fFound_VM_Ware();
-
-            /*
-              Console.WriteLine("Path :  "  +  cbPath.Text);
-            Console.WriteLine(WinApi.GetFullPathFromWindows(cbPath.Text));
-            Console.WriteLine(WinApi.GetFullPathFromWindows("vmplayer.exe"));
-            return;
-            */
-          // if(WinApi.GetFullPathFromWindows("imdisk.exe") != null) {
-
-           // }
-
-
-            fUnMount(sMountDirectory);
-            //!!!TODO wait to completly unmont!!!!!
+            this.BeginInvoke((MethodInvoker)delegate  {
+           
 
             fOut(null, "Lauch: "+  cbPath.Text);
             if(File.Exists(cbPath.Text)) {
@@ -276,6 +262,58 @@ namespace VM_Viewer {
                 break;
 
             }
+
+            });
+        }
+
+        private void btnLauch_Click(object sender, EventArgs e) {
+            btnLauch.Enabled = false;
+           fFound_VM_Ware();
+
+            /*
+              Console.WriteLine("Path :  "  +  cbPath.Text);
+            Console.WriteLine(WinApi.GetFullPathFromWindows(cbPath.Text));
+            Console.WriteLine(WinApi.GetFullPathFromWindows("vmplayer.exe"));
+            return;
+            */
+          // if(WinApi.GetFullPathFromWindows("imdisk.exe") != null) {
+
+           // }
+
+
+            fUnMount(sMountDirectory);
+            //!!!TODO wait to completly unmont!!!!!
+
+             try {
+                    /////// Delete directory  ///////////
+                    BackgroundWorker bw = new BackgroundWorker();
+					bw.DoWork += new DoWorkEventHandler(
+					delegate(object o, DoWorkEventArgs args) {
+
+                        int _nTimeOut = 0;
+                        while(!bIsUnMount)
+                        {
+                            _nTimeOut++;
+                            Thread.Sleep(1);
+                            if(_nTimeOut > 3000)
+                            {
+                                break;
+                            }
+                        }
+
+                         if(_nTimeOut > 3000){
+                             fOut(null, "TimeOut, Unable to unmount drive!");
+                         }else{
+                             fLauch();
+                        }
+
+                       
+                    });
+                 bw.RunWorkerAsync();
+
+            }catch(Exception _e){}
+
+            
 
 
         }
@@ -826,10 +864,10 @@ namespace VM_Viewer {
         }
 
 
-
+        public bool bIsUnMount = false;
         private void fUnMount(string _sPath, bool _bForce =false)
         {
-
+            bIsUnMount = false;
             Console.WriteLine("Try to unmount: " + _sPath);
             if (btnEdit.Text == "UnMount" || _bForce)
             {
@@ -875,7 +913,10 @@ namespace VM_Viewer {
             }
         }
 
+
+
         public void fFinishUnmount() {
+            bIsUnMount = true;
              this.BeginInvoke((MethodInvoker)delegate {
                btnEdit.Text = "Edit Drive";
                  btnEdit.Enabled = true;

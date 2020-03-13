@@ -1,9 +1,10 @@
 <Config>
-  <vStartPos X="164" Y="101" />
+  <vStartPos X="104" Y="112" />
   <vStartSize Width="877" Height="805" />
   <bTreePrjOpen Val="False" />
   <bMaximize Val="False" />
   <RecentList>
+    <Recent Path="E:/MyVM/PUBLIC Cpcdos OSx.vmx" />
     <Recent Path="D:/Data/autre/_CpcD/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.ova" />
     <Recent Path="E:/CpcDos/MyVM/PUBLIC Cpcdos OSx.vmx" />
     <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.ova" />
