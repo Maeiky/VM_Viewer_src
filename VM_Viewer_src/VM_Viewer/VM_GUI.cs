@@ -303,6 +303,7 @@ namespace VM_Viewer {
 
                          if(_nTimeOut > 3000){
                              fOut(null, "TimeOut, Unable to unmount drive!");
+                             this.BeginInvoke((MethodInvoker)delegate  { btnLauch.Enabled = true; });
                          }else{
                              fLauch();
                         }
