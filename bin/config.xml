@@ -1,20 +1,10 @@
 <Config>
-  <vStartPos X="-1393" Y="130" />
-  <vStartSize Width="918" Height="713" />
+  <vStartPos X="236" Y="71" />
+  <vStartSize Width="693" Height="542" />
   <bTreePrjOpen Val="False" />
   <bMaximize Val="False" />
   <RecentList>
-    <Recent Path="E:/CpcDos/MyVM/PUBLIC Cpcdos OSx.vmx" />
-    <Recent Path="E:/MyVM/PUBLIC Cpcdos OSx.vmx" />
-    <Recent Path="D:/Data/autre/_CpcD/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.ova" />
-    <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.ova" />
-    <Recent Path="E:/MyVM/Kali Linux 1.0.6 64 bit/Kali Linux 1.0.6 64 bit.vmx" />
-    <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.vmx" />
-    <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/PUBLIC Cpcdos OSx/PUBLIC Cpcdos OSx.vmx" />
-    <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/PUBLIC Cpcdos OSx/PUBLIC Cpcdos OSx.ovf" />
-    <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx/PUBLIC Cpcdos OSx.ovf" />
-    <Recent Path="../PUBLIC Cpcdos OSx/PUBLIC Cpcdos OSx.ovf" />
-    <Recent Path="../../[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.ova" />
+    <Recent Path="E:/MyVM/PUBLIC Cpcdos OSx.ova" />
   </RecentList>
   <ElementList />
 </Config>

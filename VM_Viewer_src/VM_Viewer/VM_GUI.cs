@@ -1,6 +1,7 @@
 ﻿using cwc;
 using cwc.Utilities;
 using CwcGUI;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -183,13 +184,56 @@ namespace VM_Viewer {
 
         }
 
+
+
+
+        public string fGetRegKey() {
+            try{
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Classes\Applications\vmplayer.exe\shell\open\command"))
+            {
+            if (key != null)
+            {
+                Object o = key.GetValue("");
+                if (o != null)
+                {
+                     return o.ToString();
+                   // Version version = new Version(o as String);  //"as" because it's REG_SZ...otherwise ToString() might be safe(r)
+                    //do what you like with version
+                }
+            }
+            }
+            }
+            catch (Exception ex)  //just for demonstration...it's always best to handle specific exceptions
+            {
+            //react appropriately
+                return "";
+            }
+            return "";
+        }
+
+
         public void fFound_VM_Ware(bool _bDialog = true) {
+            //Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\vmplayer.exe\shell\open\command
+
+
                  string _sVM_Path = "";
             if(File.Exists(@"C:\Program Files (x86)\VMware\VMware Player\vmplayer.exe")) {
                 _sVM_Path= @"C:\Program Files (x86)\VMware\VMware Player\vmplayer.exe";
             }
               if(File.Exists(@"C:\Program Files\VMware\VMware Player\vmplayer.exe")) {
                 _sVM_Path=   @"C:\Program Files\VMware\VMware Player\vmplayer.exe";
+            }
+
+            if(_sVM_Path == "") {//Try to get regkey
+                string _sKey = fGetRegKey();
+                int _nBegin = _sKey.IndexOf('"')+1;
+                 int _nEnd = _sKey.IndexOf('"',_nBegin );
+                string _sResult = _sKey.Substring(_nBegin,_nEnd- _nBegin);
+                if(File.Exists(_sResult)) {
+                    _sVM_Path = _sResult;
+                }else{
+                    if(_sKey != "") { fOut(null, "Unable to use RegKey: " +_sVM_Path );}
+                }
             }
 
             if(_sVM_Path == "" && _bDialog) {
@@ -210,6 +254,14 @@ namespace VM_Viewer {
             }
 
              sVM_Path = Path.GetDirectoryName(_sVM_Path) + "\\";
+
+        }
+
+
+        public string fGetVMX(string _sSource){
+            string _sSrcDir = Path.GetDirectoryName(_sSource);
+            string _sName =  Path.GetFileNameWithoutExtension(_sSource);
+            return _sSrcDir + "\\" + _sName + ".vmx";
 
         }
 
@@ -238,10 +290,8 @@ namespace VM_Viewer {
 
                 case "ova":
                 case "ovf":
-                    string  _sSource =  _sPath;
-                    string _sSrcDir = Path.GetDirectoryName(_sSource);
-                    string _sName =  Path.GetFileNameWithoutExtension(_sSource);
-                    string _sDest =  _sSrcDir + "\\" + _sName + ".vmx";
+                    
+                    string _sDest =  fGetVMX(_sPath);
                     sConvertToFile = _sDest;
 
                     if(!File.Exists(_sDest) ) {
@@ -1283,7 +1333,10 @@ namespace VM_Viewer {
 
         private void exportToovaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            fConvertOva(cbPath.Text,  Path.GetDirectoryName( cbPath.Text) + "\\Export.ova"  );
+          string _sDate  =   System.DateTime.Now.ToString().Replace('/', '-').Replace(':', '-').Replace(' ', '_');
+
+
+            fConvertOva(fGetVMX(cbPath.Text),  Path.GetDirectoryName( cbPath.Text) + "\\Export" + _sDate+ ".ova"  );
         }
     }
 }

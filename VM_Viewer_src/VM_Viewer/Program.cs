@@ -21,6 +21,13 @@ static extern bool SetForegroundWindow(IntPtr hWnd);
 [STAThread]
 static void Main()
 {
+
+    Application.EnableVisualStyles();
+    Application.SetCompatibleTextRenderingDefault(false);
+    Application.Run(new VM_Viewer.VM_GUI());
+  //  return;
+        /*
+
    bool createdNew = true;
    using (Mutex mutex = new Mutex(true, "MyApplicationName", out createdNew))
    {
@@ -42,7 +49,7 @@ static void Main()
             }
          }
       }
-   }
+   }*/
 }
 }
 
