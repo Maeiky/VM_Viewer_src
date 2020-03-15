@@ -279,7 +279,7 @@ namespace VM_Viewer {
 
 
         public void fConvertOva(string _sPath, string _sDest){
-
+            fFound_VM_Ware();
           oConvert = new LauchTool();
             oConvert.dOut = new LauchTool.dIOut(fOut);
             oConvert.dError = new LauchTool.dIError(fOut);
@@ -288,7 +288,7 @@ namespace VM_Viewer {
 
             oConvert.bOutput = true;
 
-            fOut(null, "Export: "+  _sPath);
+            fOut(null, "Export: "+   "\""  + _sPath  + "\" \"" + _sDest + "\"");
             oConvert.fLauchExe(sVM_Path + @"OVFTool\ovftool.exe", "\""  + _sPath  + "\" \"" + _sDest + "\"");
 
         }
