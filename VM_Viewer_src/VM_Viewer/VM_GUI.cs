@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace VM_Viewer {
           LauchTool oConvert = null;
           LauchTool oLauch = null;
           LauchTool oLDrive = null;
+         
           LauchTool oLoadedDrive = null;
           LauchTool oInstallDriver = null;
           LauchTool oKvmAction = null;
@@ -344,7 +346,7 @@ namespace VM_Viewer {
           Size rtStartSize;
          private void VM_GUI_Load(object sender, EventArgs e) {
              ///////Ini State///
-
+             mnViewer.ForeColor = Color.WhiteSmoke; 
              oOriColor = btnLauch.BackColor;
              sOriText = btnLauch.Text;
              fStopLaodingLauch();
@@ -492,7 +494,7 @@ namespace VM_Viewer {
 
 
                 WinApi.ShowWindow(_nHandle, LauchTool.SW_MAXIMIZE);
-                ResizeConsole();
+                ResizeConsole(Handle,nVM_Handle);
 
                 WinApi.SetForegroundWindow(Handle);
                 /*
@@ -548,27 +550,27 @@ namespace VM_Viewer {
         }
 
 
-        public void ResizeConsole(bool _bZero = false)
+        public void ResizeConsole(IntPtr _Handle, IntPtr _CtrlHandle, int _nBorder = 2, bool _bZero = false)
         {
 
             this.BeginInvoke((MethodInvoker)delegate {
-                int _nBorder = 2;
+               // int _nBorder = 2;
 
-            Rectangle clientRect = WinApi.GetClientRect(Handle);
+            Rectangle clientRect = WinApi.GetClientRect(_Handle);
          
 
 
             //  this.BeginInvoke((MethodInvoker)delegate {
             //   WinApi.ShowWindow(cmdHandle, WinApi.SW_SHOWMAXIMIZED);
-            if (nVM_Handle != IntPtr.Zero) {
+            if (_CtrlHandle != IntPtr.Zero) {
                     if (_bZero) {
                         //WinApi.ResizeClientRectTo(nVM_Handle, new Rectangle(new Point(_nBorder, _nBorder), new Size(_nBorder, _nBorder)));
-                        WinApi.ResizeClientRectTo(nVM_Handle, new Rectangle(new Point(clientRect.Left + _nBorder, clientRect.Top), new Size(new Point(clientRect.Right - _nBorder * 2 + 1, clientRect.Bottom - _nBorder * 1 ))));
+                        WinApi.ResizeClientRectTo(_CtrlHandle, new Rectangle(new Point(clientRect.Left + _nBorder, clientRect.Top), new Size(new Point(clientRect.Right - _nBorder * 2 + 1, clientRect.Bottom - _nBorder * 1 ))));
 
                     }
                     else
                     {
-                        WinApi.ResizeClientRectTo(nVM_Handle, new Rectangle(new Point(clientRect.Left + _nBorder, clientRect.Top ), new Size(new Point(clientRect.Right - _nBorder*2, clientRect.Bottom - _nBorder*1))));
+                        WinApi.ResizeClientRectTo(_CtrlHandle , new Rectangle(new Point(clientRect.Left + _nBorder, clientRect.Top ), new Size(new Point(clientRect.Right - _nBorder*2, clientRect.Bottom - _nBorder*1))));
                        // WinApi.ResizeClientRectTo(nVM_Handle, clientRect);
                     }
                 }
@@ -585,7 +587,7 @@ namespace VM_Viewer {
 
         private void VM_GUI_Resize(object sender, EventArgs e)
         {
-            ResizeConsole();
+            ResizeConsole(Handle,nVM_Handle);
             if (bCreated)
             {
 
@@ -777,7 +779,7 @@ namespace VM_Viewer {
                                     Directory.CreateDirectory(_sDirectory);
                                 }
                             }
-
+                            bIsUnMount = false;
                             oLDrive = new LauchTool();
                             oLDrive.dOut = new LauchTool.dIOut(fOut);
                             oLDrive.bRunAsAdmin = true;
@@ -802,7 +804,8 @@ namespace VM_Viewer {
                          //  oLFolder.fLauchExe("explorer.exe", "\"" + sMountDirectory + "\"");
                   
                             if(cbOpen.Checked) {
-                                System.Diagnostics.Process.Start("explorer.exe", "\"" + sMountDirectory + "\"");
+                                fOpenFolder();
+                                    
                             }
 
                             btnEdit.Text = "UnMount";
@@ -853,6 +856,86 @@ namespace VM_Viewer {
              }
         }
 
+        private void fOpenFolder()
+        {
+         //  System.Diagnostics.Process.Start("explorer.exe", "\"" + sMountDirectory + "\"");
+                               
+         
+
+
+                //  oLFolder = new LauchTool();
+                //   oLFolder.bOutput = false;
+                //   oLFolder.fLauchExe("explorer.exe", "\"" + sMountDirectory + "\"");
+        //
+        
+            Console.WriteLine("Get the process handle example.");
+            var process = new Process{
+                StartInfo = new ProcessStartInfo("explorer.exe", "\"" + sMountDirectory + "\"")
+            };
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.Start();
+            Console.WriteLine("Process Id: " + process.Id);
+            Console.WriteLine("Process Name: " + process.ProcessName);
+            Console.WriteLine("Process Handle(IntPtr): " + process.Handle.ToString());
+            Console.ReadLine();
+            
+           // process.
+
+               MoveAllExplorerWindows();
+
+            //Thread.Sleep(2000);
+                  //  process.Refresh();      
+            /*       
+            while (process.MainWindowHandle == IntPtr.Zero) {
+                Thread.Sleep(1);
+                process.Refresh();
+            }*/
+            //fSetParent(process.Handle);
+            //process.Kill();
+        }
+
+
+
+        private void MoveAllExplorerWindows(){
+                string filename;
+                
+                Thread.Sleep(1000);
+                foreach (SHDocVw.InternetExplorer window in new SHDocVw.ShellWindows())
+                {
+                    IntPtr _nHandle =  (IntPtr) window.HWND;
+
+                     //fOut(null, window.FullName);
+                  //   fOut(null, window.StatusText);
+                     fOut(null, window.LocationName);
+                     fOut(null, window.LocationURL);
+                  //  fSetParent((IntPtr) window.HWND);
+
+                WinApi.SetParent(_nHandle, tbConsole.Handle);
+                   int style = WinApi.GetWindowLong(_nHandle, WinApi.GWL_STYLE);
+                WinApi.SetWindowLong(_nHandle, WinApi.GWL_STYLE, (style & ~WinApi.WS_CAPTION));
+
+                  WinApi.ShowWindow(_nHandle, WinApi.SW_SHOW);
+                   ResizeConsole(tbConsole.Handle, _nHandle);
+                WinApi.ShowWindow(_nHandle, LauchTool.SW_MAXIMIZE);
+                ResizeConsole(tbConsole.Handle, _nHandle,1);
+                tbControl.Invalidate();
+tbControl.Refresh();
+                //Thread.Sleep(333);
+                //   ResizeConsole(tbConsole.Handle, _nHandle,0);
+
+                /*
+                    filename = Path.GetFileNameWithoutExtension(window.FullName).ToLower();
+                    if (filename.ToLowerInvariant() == "explorer")
+                    {
+                        window.Left = 0;
+                        window.Top = 0;
+                        window.Width = 800;
+                        window.Height = 600;
+                    }
+                    */
+                }
+            }
+
         private void fDriverFinish(LauchTool _oTool){
           this.BeginInvoke((MethodInvoker)delegate {
               btnEdit.Enabled =  true;
@@ -865,13 +948,14 @@ namespace VM_Viewer {
         }
 
 
-        public bool bIsUnMount = false;
+        public bool bIsUnMount = true;
         private void fUnMount(string _sPath, bool _bForce =false)
         {
-            bIsUnMount = false;
+            
             Console.WriteLine("Try to unmount: " + _sPath);
             if (btnEdit.Text == "UnMount" || _bForce)
             {
+                bIsUnMount = false;
                 oLDrive = new LauchTool();
                 oLDrive.dOut = new LauchTool.dIOut(fOut);
                 oLDrive.bRunAsAdmin = true;
@@ -1037,17 +1121,17 @@ namespace VM_Viewer {
 
 
         void fUpdateRtState() {
-            rtStartPos =  rtOutput.Location;
-            rtStartSize =  rtOutput.Size;
+            rtStartPos =  tbControl.Location;
+            rtStartSize =  tbControl.Size;
             int _nSize = 75;
             if(cbFullScreen.Checked) {
                  gbFullScreen.Visible = true;
-                rtOutput.Size = new Size( rtStartSize.Width , rtStartSize.Height - _nSize);
-                rtOutput.Location = new Point(rtStartPos.X, rtStartPos.Y         + _nSize);
+                tbControl.Size = new Size( rtStartSize.Width , rtStartSize.Height - _nSize);
+                tbControl.Location = new Point(rtStartPos.X, rtStartPos.Y         + _nSize);
             }else{
                 gbFullScreen.Visible = false;
-                rtOutput.Size = new Size( rtStartSize.Width , rtStartSize.Height + _nSize);
-                rtOutput.Location = new Point(rtStartPos.X, rtStartPos.Y          - _nSize);
+                tbControl.Size = new Size( rtStartSize.Width , rtStartSize.Height + _nSize);
+                tbControl.Location = new Point(rtStartPos.X, rtStartPos.Y          - _nSize);
             }
         }
 
