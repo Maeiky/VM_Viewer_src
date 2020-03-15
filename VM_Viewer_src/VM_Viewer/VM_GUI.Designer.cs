@@ -320,8 +320,9 @@
             // vmxSettingsToolStripMenuItem
             // 
             this.vmxSettingsToolStripMenuItem.Name = "vmxSettingsToolStripMenuItem";
-            this.vmxSettingsToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.vmxSettingsToolStripMenuItem.Text = "Vmx Settings";
+            this.vmxSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.vmxSettingsToolStripMenuItem.Text = "Open Library";
+            this.vmxSettingsToolStripMenuItem.Click += new System.EventHandler(this.vmxSettingsToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 

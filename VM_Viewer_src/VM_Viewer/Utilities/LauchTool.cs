@@ -346,39 +346,41 @@ public const int C = 0x43; //C key code
                    //   ShowWindow(ExeProcess.MainWindowHandle, SW_RESTORE);
                     //    ShowWindow(ExeProcess.MainWindowHandle, SW_HIDE);
 
-                    string _sTitle = ExeProcess.MainWindowTitle;
-                    while (bExeLauched && !ExeProcess.HasExited) {
-                        if (oFromWindow != null) {
+                    if(sArg != "") {
+                        string _sTitle = ExeProcess.MainWindowTitle;
+                        while (bExeLauched && !ExeProcess.HasExited) {
+                            if (oFromWindow != null) {
 
-                            // WinApi.GetWindowInfo
-                          //  Console.WriteLine("Title: " + ExeProcess.MainWindowTitle);
-                            ExeProcess.Refresh();
-                              //  break;
-                            if (_sTitle != ExeProcess.MainWindowTitle) {
-                                break;
-                            }
-
-                            /*
-                            Rect r = new Rect();
-                            GetWindowRect(ExeProcess.MainWindowHandle, ref r);
-                            if ((r.Left != t.Left || r.Top != t.Top || r.Right != t.Right || r.Bottom != t.Bottom))
-                            {
-                                t = r;
-                                _nCountRes++;
-                                Console.WriteLine(r.Left + ":" + r.Right + ":" + r.Top + ":" + r.Bottom);
-                                if (_nCountRes == 2) {
-                            //        break;
+                                // WinApi.GetWindowInfo
+                              //  Console.WriteLine("Title: " + ExeProcess.MainWindowTitle);
+                                ExeProcess.Refresh();
+                                  //  break;
+                                if (_sTitle != ExeProcess.MainWindowTitle) {
+                                    break;
                                 }
+
+                                /*
+                                Rect r = new Rect();
+                                GetWindowRect(ExeProcess.MainWindowHandle, ref r);
+                                if ((r.Left != t.Left || r.Top != t.Top || r.Right != t.Right || r.Bottom != t.Bottom))
+                                {
+                                    t = r;
+                                    _nCountRes++;
+                                    Console.WriteLine(r.Left + ":" + r.Right + ":" + r.Top + ":" + r.Bottom);
+                                    if (_nCountRes == 2) {
+                                //        break;
+                                    }
                               
-                            }*/
+                                }*/
+                            }
+                            Thread.Sleep(10);//4 frames
                         }
-                        Thread.Sleep(10);//4 frames
-                    }
+                  
 
                     Thread.Sleep(1);
-             
-
                     Thread.Sleep(1000); //Remove Popup
+
+                    }
                     oFromWindow.fSetParent(ExeProcess.MainWindowHandle);
 
                      ShowWindow(ExeProcess.MainWindowHandle, SW_SHOW);

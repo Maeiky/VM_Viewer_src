@@ -131,7 +131,7 @@ namespace VM_Viewer {
 
 
         private void fLauchVMX(string _sPath) {
-            if(!File.Exists(_sPath))
+            if(_sPath != "" && !File.Exists(_sPath))
             {
                 fOut(null, "Error >> File not exist: "+  _sPath);
             }
@@ -140,7 +140,7 @@ namespace VM_Viewer {
               sLauched_Path = _sPath;
 
 
-            if(!cbFullScreen.Checked) { //Normal Mode
+            if(_sPath == "" || !cbFullScreen.Checked) { //Normal Mode
                 bFullScreenMode = false;
                 oLauch = new LauchTool();
            
@@ -154,7 +154,11 @@ namespace VM_Viewer {
                     // oLauch.bRunAsAdmin = true;
                 }
                  fOut(null, "Lauch[vmplayer]: "+  _sPath);
-                oLauch.fLauchExe(sVM_Path + "vmplayer.exe", " " + "\""  +_sPath + "\"");
+                if(_sPath == "") {
+                    oLauch.fLauchExe(sVM_Path + "vmplayer.exe", "");
+                }else{
+                    oLauch.fLauchExe(sVM_Path + "vmplayer.exe", " " + "\""  +_sPath + "\"");
+                }
 
             }else { //FULLSceen Mode
                 bFullScreenMode = true;
@@ -209,27 +213,32 @@ namespace VM_Viewer {
 
         }
 
-        public void fLauch()
+        public void fLauch(string _sPath)
         {
 
             this.BeginInvoke((MethodInvoker)delegate  {
            
+            if(_sPath == ""){
+                 fOut(null, "Lauch Library "+  _sPath);
+                 fLauchVMX("");
+             }
 
-            fOut(null, "Lauch: "+  cbPath.Text);
-            if(File.Exists(cbPath.Text)) {
-                 ConfigMng.oConfig.fAddRecent(cbPath.Text);
+
+            fOut(null, "Lauch: "+  _sPath);
+            if(File.Exists(_sPath)) {
+                 ConfigMng.oConfig.fAddRecent(_sPath);
             }
-            string _sType = Path.GetFileName(cbPath.Text);
+            string _sType = Path.GetFileName(_sPath);
             _sType = _sType.Substring(_sType.LastIndexOf('.')+1);
             Console.WriteLine("_sType :" +  _sType);
             switch (_sType) {
                 case "vmx":
-                   fLauchVMX(cbPath.Text);
+                   fLauchVMX(_sPath);
                 break;
 
                 case "ova":
                 case "ovf":
-                    string  _sSource =  cbPath.Text;
+                    string  _sSource =  _sPath;
                     string _sSrcDir = Path.GetDirectoryName(_sSource);
                     string _sName =  Path.GetFileNameWithoutExtension(_sSource);
                     string _sDest =  _sSrcDir + "\\" + _sName + ".vmx";
@@ -268,7 +277,9 @@ namespace VM_Viewer {
             });
         }
 
-        private void btnLauch_Click(object sender, EventArgs e) {
+
+        public void fLauchBtn(string _sPath)
+        {
             btnLauch.Enabled = false;
            fFound_VM_Ware();
 
@@ -307,7 +318,7 @@ namespace VM_Viewer {
                              fOut(null, "TimeOut, Unable to unmount drive!");
                              this.BeginInvoke((MethodInvoker)delegate  { btnLauch.Enabled = true; });
                          }else{
-                             fLauch();
+                             fLauch(_sPath);
                         }
 
                        
@@ -316,6 +327,13 @@ namespace VM_Viewer {
 
             }catch(Exception _e){}
 
+
+        }
+
+
+
+        private void btnLauch_Click(object sender, EventArgs e) {
+           fLauchBtn(cbPath.Text);
             
 
 
@@ -1233,6 +1251,11 @@ namespace VM_Viewer {
         private void tbControl_SelectedIndexChanged(object sender, EventArgs e)
         {
               ResizeConsole(tbFolder.Handle, nFolderHandle,0, tbControl, nTtitleHeight);
+        }
+
+        private void vmxSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fLauchBtn(""); //"" is library
         }
     }
 }
