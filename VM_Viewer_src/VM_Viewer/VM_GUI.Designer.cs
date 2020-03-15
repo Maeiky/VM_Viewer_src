@@ -320,7 +320,7 @@
             // vmxSettingsToolStripMenuItem
             // 
             this.vmxSettingsToolStripMenuItem.Name = "vmxSettingsToolStripMenuItem";
-            this.vmxSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.vmxSettingsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.vmxSettingsToolStripMenuItem.Text = "Open Library";
             this.vmxSettingsToolStripMenuItem.Click += new System.EventHandler(this.vmxSettingsToolStripMenuItem_Click);
             // 
@@ -335,8 +335,9 @@
             // exportToovaToolStripMenuItem
             // 
             this.exportToovaToolStripMenuItem.Name = "exportToovaToolStripMenuItem";
-            this.exportToovaToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exportToovaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportToovaToolStripMenuItem.Text = "Export to .ova";
+            this.exportToovaToolStripMenuItem.Click += new System.EventHandler(this.exportToovaToolStripMenuItem_Click);
             // 
             // tbControl
             // 

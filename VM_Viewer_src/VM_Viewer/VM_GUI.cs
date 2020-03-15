@@ -263,9 +263,9 @@ namespace VM_Viewer {
                            // oLauch.bRunAsAdmin = true;
                         }
 
-                        ConfigMng.oConfig.fAddRecent(cbPath.Text);
-                        fOut(null, "Convert: "+  cbPath.Text);
-                        oConvert.fLauchExe(sVM_Path + @"OVFTool\ovftool.exe", "--lax " + "\""  + cbPath.Text + "\" \"" + _sDest + "\"");
+                        ConfigMng.oConfig.fAddRecent(_sPath);
+                        fOut(null, "Convert: "+  _sPath);
+                        oConvert.fLauchExe(sVM_Path + @"OVFTool\ovftool.exe", "--lax " + "\""  + _sPath + "\" \"" + _sDest + "\"");
 
                     } else{
                        fLauchVMX(_sDest);
@@ -276,6 +276,29 @@ namespace VM_Viewer {
 
             });
         }
+
+
+        public void fConvertOva(string _sPath, string _sDest){
+
+          oConvert = new LauchTool();
+            oConvert.dOut = new LauchTool.dIOut(fOut);
+            oConvert.dError = new LauchTool.dIError(fOut);
+           	oConvert.dExit = new LauchTool.dIExit(fConvertFinish);
+            oConvert.bHidden = true;
+
+            oConvert.bOutput = true;
+
+            fOut(null, "Export: "+  _sPath);
+            oConvert.fLauchExe(sVM_Path + @"OVFTool\ovftool.exe", "\""  + _sPath  + "\" \"" + _sDest + "\"");
+
+        }
+
+      //   "E:\CpcDosAss\MyVM\PUBLIC Cpcdos OSx.vmx" test.ova
+
+
+
+
+
 
 
         public void fLauchBtn(string _sPath)
@@ -1256,6 +1279,11 @@ namespace VM_Viewer {
         private void vmxSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             fLauchBtn(""); //"" is library
+        }
+
+        private void exportToovaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fConvertOva(cbPath.Text,  Path.GetDirectoryName( cbPath.Text) + "\\Export.ova"  );
         }
     }
 }
