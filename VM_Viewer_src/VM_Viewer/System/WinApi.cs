@@ -144,6 +144,9 @@ private const int MAX_PATH = 260;
         [DllImport("user32.dll")]
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
+         [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hwnd, out RECT rectangle);
+
         [DllImport("user32.dll")]
         public static extern bool AdjustWindowRect(ref RECT lpRect, int dwStyle, bool bMenu);
 
@@ -154,6 +157,16 @@ private const int MAX_PATH = 260;
 
             return new Rectangle(rc.Left, rc.Top, rc.Right - rc.Left, rc.Bottom - rc.Top);
         }
+        
+        public static Rectangle GetWindowRect(IntPtr hWnd)
+        {
+            RECT rc;
+            GetWindowRect(hWnd, out rc);
+
+            return new Rectangle(rc.Left, rc.Top, rc.Right - rc.Left, rc.Bottom - rc.Top);
+        }
+
+
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
@@ -167,6 +180,10 @@ private const int MAX_PATH = 260;
         //Sets window attributes
         [DllImport("USER32.DLL")]
         public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+
+        
+
 
 
         public static void ResizeClientRectTo(IntPtr hWnd, Rectangle desired)
@@ -184,10 +201,11 @@ private const int MAX_PATH = 260;
 
 
 
-
+        [DllImport("kernel32.dll", SetLastError=true)]
+       public static extern bool CloseHandle(IntPtr hObject);
 
         [DllImport("user32.dll")]
-        static extern bool ClientToScreen(IntPtr hWnd, ref Point lpPoint);
+       public  static extern bool ClientToScreen(IntPtr hWnd, ref Point lpPoint);
 
         [DllImport("user32.dll")]
         internal static extern uint SendInput(uint nInputs, [MarshalAs(UnmanagedType.LPArray), In] INPUT[] pInputs, int cbSize);

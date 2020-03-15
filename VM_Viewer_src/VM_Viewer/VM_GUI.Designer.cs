@@ -41,9 +41,9 @@
             this.btnReset = new System.Windows.Forms.Button();
             this.mnViewer = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vmxSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToovaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.vmxSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbControl = new System.Windows.Forms.TabControl();
             this.tbConsole = new System.Windows.Forms.TabPage();
             this.tbFolder = new System.Windows.Forms.TabPage();
@@ -127,7 +127,7 @@
             // 
             this.cbPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbPath.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.cbPath.BackColor = System.Drawing.Color.Black;
             this.cbPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cbPath.ForeColor = System.Drawing.SystemColors.Info;
             this.cbPath.FormattingEnabled = true;
@@ -141,7 +141,7 @@
             // 
             this.cbDrive.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbDrive.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.cbDrive.BackColor = System.Drawing.Color.Black;
             this.cbDrive.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDrive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cbDrive.ForeColor = System.Drawing.SystemColors.Info;
@@ -178,6 +178,7 @@
             this.cbOpen.TabIndex = 8;
             this.cbOpen.Text = "Open on Mount";
             this.cbOpen.UseVisualStyleBackColor = true;
+            this.cbOpen.Visible = false;
             // 
             // cbFullScreen
             // 
@@ -230,7 +231,7 @@
             // 
             // rtOutput
             // 
-            this.rtOutput.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.rtOutput.BackColor = System.Drawing.Color.Black;
             this.rtOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtOutput.ForeColor = System.Drawing.SystemColors.Info;
             this.rtOutput.Location = new System.Drawing.Point(3, 3);
@@ -316,6 +317,12 @@
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
+            // vmxSettingsToolStripMenuItem
+            // 
+            this.vmxSettingsToolStripMenuItem.Name = "vmxSettingsToolStripMenuItem";
+            this.vmxSettingsToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.vmxSettingsToolStripMenuItem.Text = "Vmx Settings";
+            // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -327,14 +334,8 @@
             // exportToovaToolStripMenuItem
             // 
             this.exportToovaToolStripMenuItem.Name = "exportToovaToolStripMenuItem";
-            this.exportToovaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportToovaToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.exportToovaToolStripMenuItem.Text = "Export to .ova";
-            // 
-            // vmxSettingsToolStripMenuItem
-            // 
-            this.vmxSettingsToolStripMenuItem.Name = "vmxSettingsToolStripMenuItem";
-            this.vmxSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.vmxSettingsToolStripMenuItem.Text = "Vmx Settings";
             // 
             // tbControl
             // 
@@ -349,6 +350,7 @@
             this.tbControl.SelectedIndex = 0;
             this.tbControl.Size = new System.Drawing.Size(653, 239);
             this.tbControl.TabIndex = 18;
+            this.tbControl.SelectedIndexChanged += new System.EventHandler(this.tbControl_SelectedIndexChanged);
             // 
             // tbConsole
             // 

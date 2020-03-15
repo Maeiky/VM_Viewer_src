@@ -342,8 +342,10 @@ namespace VM_Viewer {
              });*/
         }
 
+
           Point rtStartPos;
           Size rtStartSize;
+             int nTtitleHeight=0;
          private void VM_GUI_Load(object sender, EventArgs e) {
              ///////Ini State///
              mnViewer.ForeColor = Color.WhiteSmoke; 
@@ -352,6 +354,12 @@ namespace VM_Viewer {
              fStopLaodingLauch();
              fUpdateRtState();
             /////////////////////
+
+
+             Rectangle screenRectangle = this.RectangleToScreen(this.ClientRectangle);
+           nTtitleHeight = screenRectangle.Top - this.Top;
+
+
 
             oConfig = new ConfigMng();
             oConfig.LoadConfig(this);
@@ -494,6 +502,7 @@ namespace VM_Viewer {
 
 
                 WinApi.ShowWindow(_nHandle, LauchTool.SW_MAXIMIZE);
+
                 ResizeConsole(Handle,nVM_Handle);
 
                 WinApi.SetForegroundWindow(Handle);
@@ -550,34 +559,66 @@ namespace VM_Viewer {
         }
 
 
-        public void ResizeConsole(IntPtr _Handle, IntPtr _CtrlHandle, int _nBorder = 2, bool _bZero = false)
+        public void ResizeConsole(IntPtr _Handle, IntPtr _CtrlHandle, int _nBorder = 2, Control _oCtrl = null, int _nOffset  = 0)
         {
 
             this.BeginInvoke((MethodInvoker)delegate {
                // int _nBorder = 2;
 
+
+
+      //  Console.WriteLine("----------aaa : " + _nOffset);
+
+
+
+
             Rectangle clientRect = WinApi.GetClientRect(_Handle);
          
 
+            
 
             //  this.BeginInvoke((MethodInvoker)delegate {
             //   WinApi.ShowWindow(cmdHandle, WinApi.SW_SHOWMAXIMIZED);
             if (_CtrlHandle != IntPtr.Zero) {
-                    if (_bZero) {
-                        //WinApi.ResizeClientRectTo(nVM_Handle, new Rectangle(new Point(_nBorder, _nBorder), new Size(_nBorder, _nBorder)));
-                        WinApi.ResizeClientRectTo(_CtrlHandle, new Rectangle(new Point(clientRect.Left + _nBorder, clientRect.Top), new Size(new Point(clientRect.Right - _nBorder * 2 + 1, clientRect.Bottom - _nBorder * 1 ))));
-
-                    }
-                    else
-                    {
-                        WinApi.ResizeClientRectTo(_CtrlHandle , new Rectangle(new Point(clientRect.Left + _nBorder, clientRect.Top ), new Size(new Point(clientRect.Right - _nBorder*2, clientRect.Bottom - _nBorder*1))));
+                 
+                        WinApi.ResizeClientRectTo(_CtrlHandle , new Rectangle(new Point(clientRect.Left + _nBorder, clientRect.Top - _nOffset), new Size(new Point(clientRect.Right - _nBorder*2, clientRect.Bottom - _nBorder*1+_nOffset))));
                        // WinApi.ResizeClientRectTo(nVM_Handle, clientRect);
-                    }
+                    
                 }
           
-            //    Refresh();
-             //   Invalidate();
+
+         
+
+                /*
+                Point _ptTest = new Point();
+                 WinApi.ClientToScreen(_CtrlHandle, ref _ptTest);
+            //Console.WriteLine("aaa "+ rect);
+
+
+                 Console.WriteLine("bbb "+ _ptTest);
+                 WinApi.ClientToScreen(_Handle, ref _ptTest);
+                 Console.WriteLine("cccc "+ _ptTest);
+                 */
+
+
+                if(_oCtrl != null) {
+                    _oCtrl.Invalidate();
+                    _oCtrl.Update();
+                    _oCtrl.Refresh();
+
+                }
+
+                 Invalidate();
+                Update(); 
+                Refresh();
+               // Invalidate();
+                
+
+
+
             });
+
+
         }
 
         private void VM_GUI_SizeChanged(object sender, EventArgs e)
@@ -588,6 +629,9 @@ namespace VM_Viewer {
         private void VM_GUI_Resize(object sender, EventArgs e)
         {
             ResizeConsole(Handle,nVM_Handle);
+            if(nFolderHandle != null) {
+                 ResizeConsole(tbFolder.Handle, nFolderHandle,0, tbControl, nTtitleHeight);
+            }
             if (bCreated)
             {
 
@@ -759,20 +803,26 @@ namespace VM_Viewer {
                                     try { 
 
                                         do {
+                                         /*
                                             if( Directory.GetFileSystemEntries(_sNewPath, "*.*").Length != 0 ){
+                                                
                                                 fUnMount(_sNewPath, true); //TODO check if attribute is mounted
                                                 if(!Directory.Exists(_sNewPath)){ // Able to unmount
                                                     break;
                                                 }
+
                                             }else{
-                                                break;
-                                            }
+                                               // break;
+                                            }*/
                                             _nCount++;
                                              _sNewPath = _sDirectory + "_" + _nCount.ToString();
                                         } while (Directory.Exists(_sNewPath));
 
                                     }catch(Exception ex)  { //If is already mounted and crash
-                                        fUnMount(_sNewPath);
+                                        if(File.Exists(_sNewPath)) {
+                                            fUnMount(_sNewPath);
+                                          }
+                                        
                                     }
 
                                     _sDirectory = _sNewPath;
@@ -867,22 +917,41 @@ namespace VM_Viewer {
                 //   oLFolder.bOutput = false;
                 //   oLFolder.fLauchExe("explorer.exe", "\"" + sMountDirectory + "\"");
         //
-        
+
+            string _sOpenFolder = sMountDirectory;
+            if(sCloseLocation != null){
+                _sOpenFolder += sCloseLocation;
+                //  sCloseLocation
+            }
+
+            
+            int _nTimeOut = 0;
+            while(!Directory.Exists(_sOpenFolder) )  {
+                Thread.Sleep(1);
+                _nTimeOut++;
+                if(_nTimeOut > 1000){
+                    break;
+                }
+            }
+            if(!Directory.Exists(_sOpenFolder) ) {
+                _sOpenFolder = sMountDirectory;
+            }
+      
             Console.WriteLine("Get the process handle example.");
             var process = new Process{
-                StartInfo = new ProcessStartInfo("explorer.exe", "\"" + sMountDirectory + "\"")
+                StartInfo = new ProcessStartInfo("explorer.exe", "\"" + _sOpenFolder + "\"")
             };
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.Start();
+            /*
             Console.WriteLine("Process Id: " + process.Id);
             Console.WriteLine("Process Name: " + process.ProcessName);
             Console.WriteLine("Process Handle(IntPtr): " + process.Handle.ToString());
             Console.ReadLine();
-            
-           // process.
+            */
 
-               MoveAllExplorerWindows();
-
+           MoveAllExplorerWindows(_sOpenFolder,  Path.GetFileName( sMountDirectory));
+   
             //Thread.Sleep(2000);
                   //  process.Refresh();      
             /*       
@@ -894,47 +963,51 @@ namespace VM_Viewer {
             //process.Kill();
         }
 
+        SHDocVw.InternetExplorer oFolderWindow;
+        IntPtr nFolderHandle = (IntPtr)null;
+        private void MoveAllExplorerWindows(string _sDir, string _sMountName){
+                string _sFolderName =  Path.GetFileName( _sDir);
+                bool _bFound = false;
 
+               // Thread.Sleep(1000); //Wait for opening
+                nFolderHandle = (IntPtr)null;
 
-        private void MoveAllExplorerWindows(){
-                string filename;
-                
-                Thread.Sleep(1000);
-                foreach (SHDocVw.InternetExplorer window in new SHDocVw.ShellWindows())
-                {
-                    IntPtr _nHandle =  (IntPtr) window.HWND;
-
-                     //fOut(null, window.FullName);
-                  //   fOut(null, window.StatusText);
-                     fOut(null, window.LocationName);
-                     fOut(null, window.LocationURL);
-                  //  fSetParent((IntPtr) window.HWND);
-
-                WinApi.SetParent(_nHandle, tbConsole.Handle);
-                   int style = WinApi.GetWindowLong(_nHandle, WinApi.GWL_STYLE);
-                WinApi.SetWindowLong(_nHandle, WinApi.GWL_STYLE, (style & ~WinApi.WS_CAPTION));
-
-                  WinApi.ShowWindow(_nHandle, WinApi.SW_SHOW);
-                   ResizeConsole(tbConsole.Handle, _nHandle);
-                WinApi.ShowWindow(_nHandle, LauchTool.SW_MAXIMIZE);
-                ResizeConsole(tbConsole.Handle, _nHandle,1);
-                tbControl.Invalidate();
-tbControl.Refresh();
-                //Thread.Sleep(333);
-                //   ResizeConsole(tbConsole.Handle, _nHandle,0);
-
-                /*
-                    filename = Path.GetFileNameWithoutExtension(window.FullName).ToLower();
-                    if (filename.ToLowerInvariant() == "explorer")
-                    {
-                        window.Left = 0;
-                        window.Top = 0;
-                        window.Width = 800;
-                        window.Height = 600;
-                    }
-                    */
+                int _nTimeout = 30; //3 sec
+                while(!_bFound && _nTimeout > 0) {
+                    Thread.Sleep(100);
+                    foreach (SHDocVw.InternetExplorer window in new SHDocVw.ShellWindows()){
+                        string _sLoc = window.LocationName ;
+                    
+                        if(window.LocationName == _sFolderName ){ 
+                            string _sPath = window.FullName.Replace("%20", " ");
+                            if(_sDir == _sMountName || _sPath.IndexOf(_sMountName) != 0) {
+                                  oFolderWindow = window;
+                                  nFolderHandle =  (IntPtr) window.HWND;
+                                  _bFound = true;
+                                break;
+                             }
+                         }
+                     }
+                    _nTimeout--;
                 }
-            }
+                if(_bFound == false){
+                    fOut(null, "Error: Folder not found: " + _sDir);
+                 }
+
+
+                if(nFolderHandle != null) {
+
+                    WinApi.SetParent(nFolderHandle, tbFolder.Handle);
+                    int style = WinApi.GetWindowLong(nFolderHandle, WinApi.GWL_STYLE);
+                    WinApi.SetWindowLong(nFolderHandle, WinApi.GWL_STYLE, (style & ~WinApi.WS_CAPTION));
+
+                    WinApi.ShowWindow(nFolderHandle, WinApi.SW_SHOW);
+                    WinApi.ShowWindow(nFolderHandle, LauchTool.SW_MAXIMIZE);
+
+                    tbControl.SelectTab("tbFolder");
+                    ResizeConsole(tbFolder.Handle, nFolderHandle,0, tbControl, nTtitleHeight);
+              }
+           }
 
         private void fDriverFinish(LauchTool _oTool){
           this.BeginInvoke((MethodInvoker)delegate {
@@ -947,7 +1020,7 @@ tbControl.Refresh();
           });
         }
 
-
+        public string sCloseLocation = "";
         public bool bIsUnMount = true;
         private void fUnMount(string _sPath, bool _bForce =false)
         {
@@ -962,17 +1035,20 @@ tbControl.Refresh();
                 oLDrive.bOutput = false;
                 oLDrive.bStartHidden = true;
 
-         
-                oLDrive.fLauchExe(PathHelper.GetExeDirectory() + @"ImDiskTk/ImDisk-Dlg.exe", "RM \"" + _sPath + "\"");
-
+                 try {
+                     oLDrive.fLauchExe(PathHelper.GetExeDirectory() + @"ImDiskTk/ImDisk-Dlg.exe", "RM \"" + _sPath + "\"");
+                }catch (Exception ex) {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
 
                 try {
                     /////// Delete directory  ///////////
                     BackgroundWorker bw = new BackgroundWorker();
 					bw.DoWork += new DoWorkEventHandler(
 					delegate(object o, DoWorkEventArgs args) {
-
-                            while (oLDrive.bExeLauch || oLoadedDrive.bExeLauch)
+                            
+                            int _nTimeOut = 3000;
+                            while (oLDrive.bExeLauch || (oLoadedDrive != null && oLoadedDrive.bExeLauch) )
                             {
                                 Thread.Sleep(1);
                             }
@@ -980,22 +1056,41 @@ tbControl.Refresh();
                             {
                                 Thread.Sleep(500);
                             }
-                            if(File.Exists(_sPath)) {
+                           // if(File.Exists(_sPath)) { //Not work&! But useless
+                            try {
                               Directory.Delete(_sPath);
+                             }catch (Exception ex) {
+                                Console.WriteLine("Error: " + ex.Message);
                             }
+                           // }
                             fFinishUnmount();
 					});
 					bw.RunWorkerAsync();
                     //////////////////////////////////////
-                }
-                catch (Exception ex)
-                {
+                }catch (Exception ex) {
                     Console.WriteLine("Error: " + ex.Message);
                 }
+                if(nFolderHandle != null)
+                {
+                  
+                   sCloseLocation =  oFolderWindow.LocationURL.Replace("%20", " ").Replace("file:///", "").Replace('/', '\\');
 
+                   // if(sCloseLocation.Length > sMountDirectory.Length){
+                   int _nIndex = sCloseLocation.IndexOf(sMountDirectory);
+                   if(_nIndex != -1 ){
+                        sCloseLocation = sCloseLocation.Substring(_nIndex + sMountDirectory.Length);
+                    }
+
+                   fOut(null, "Close Location: " +sCloseLocation);
+                //   fOut(null, "sMountDirectory: " +sMountDirectory.Replace('\\', '/'));
+                    oFolderWindow.Quit();
+                    tbControl.SelectTab("tbConsole");
+                }
                
               //  btnEdit.Text = "Edit Drive";
             }
+
+
         }
 
 
@@ -1135,5 +1230,9 @@ tbControl.Refresh();
             }
         }
 
+        private void tbControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+              ResizeConsole(tbFolder.Handle, nFolderHandle,0, tbControl, nTtitleHeight);
+        }
     }
 }

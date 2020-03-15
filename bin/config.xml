@@ -1,12 +1,12 @@
 <Config>
-  <vStartPos X="258" Y="6" />
-  <vStartSize Width="701" Height="554" />
+  <vStartPos X="-1262" Y="239" />
+  <vStartSize Width="918" Height="713" />
   <bTreePrjOpen Val="False" />
   <bMaximize Val="False" />
   <RecentList>
+    <Recent Path="E:/CpcDos/MyVM/PUBLIC Cpcdos OSx.vmx" />
     <Recent Path="E:/MyVM/PUBLIC Cpcdos OSx.vmx" />
     <Recent Path="D:/Data/autre/_CpcD/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.ova" />
-    <Recent Path="E:/CpcDos/MyVM/PUBLIC Cpcdos OSx.vmx" />
     <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.ova" />
     <Recent Path="E:/MyVM/Kali Linux 1.0.6 64 bit/Kali Linux 1.0.6 64 bit.vmx" />
     <Recent Path="E:/CpcDos/[PUBLIC] CpcdosOS2.1 BETA1.1 [JUIL.2019]/VM/PUBLIC Cpcdos OSx.vmx" />
