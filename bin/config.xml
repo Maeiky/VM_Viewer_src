@@ -1,9 +1,10 @@
 <Config>
-  <vStartPos X="236" Y="71" />
-  <vStartSize Width="693" Height="542" />
+  <vStartPos X="368" Y="116" />
+  <vStartSize Width="1052" Height="748" />
   <bTreePrjOpen Val="False" />
   <bMaximize Val="False" />
   <RecentList>
+    <Recent Path="E:/CpcDosAss/MyVM/Export.vmx" />
     <Recent Path="E:/MyVM/PUBLIC Cpcdos OSx.ova" />
   </RecentList>
   <ElementList />
