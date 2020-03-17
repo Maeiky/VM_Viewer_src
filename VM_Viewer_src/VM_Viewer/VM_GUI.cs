@@ -449,7 +449,8 @@ namespace VM_Viewer {
 
              Rectangle screenRectangle = this.RectangleToScreen(this.ClientRectangle);
            nTtitleHeight = screenRectangle.Top - this.Top;
-            fOut(null, "nTitleHeight: " + nTtitleHeight);
+            nTtitleHeight = 0;
+           // fOut(null, "nTitleHeight: " + nTtitleHeight);
 
 
             oConfig = new ConfigMng();
@@ -1088,14 +1089,34 @@ namespace VM_Viewer {
 
                 if(nFolderHandle != null) {
 
-                    WinApi.SetParent(nFolderHandle, tbFolder.Handle);
-                    //int style = WinApi.GetWindowLong(nFolderHandle, WinApi.GWL_STYLE);
-                   // WinApi.SetWindowLong(nFolderHandle, WinApi.GWL_STYLE, (style & ~WinApi.WS_CAPTION));
+
+
+
+              Rectangle _oRectBefore = WinApi.GetClientRect(nFolderHandle);
+              WinApi.SetParent(nFolderHandle, tbFolder.Handle);
+              Rectangle _oRectAfter = WinApi.GetClientRect(nFolderHandle);
+
+             int _nResultHeight = Math.Abs(_oRectAfter.Height - _oRectBefore.Height);
+             nTtitleHeight = _nResultHeight;
+                if(nTtitleHeight > 150) {//If somthing wrong
+                    nTtitleHeight = 0;
+                }
+
+             //  fOut(null,"_oRectBefore " + _oRectBefore.ToString());
+             //  fOut(null,"_oRectAfter " + _oRectAfter.ToString());
+             //  fOut(null,"nTtitleHeight " +nTtitleHeight);
+
+                //    int style = WinApi.GetWindowLong(nFolderHandle, WinApi.GWL_STYLE);
+                  //  WinApi.SetWindowLong(nFolderHandle, WinApi.GWL_STYLE, (style & ~WinApi.WS_CAPTION));
+
+   
                   //  WinApi.ShowWindow(nFolderHandle, LauchTool.SW_MAXIMIZE);
                     WinApi.ShowWindow(nFolderHandle, LauchTool.SW_NORMAL);
                     tbControl.SelectTab("tbFolder");
                     ResizeConsole(tbFolder.Handle, nFolderHandle,0, tbControl, nTtitleHeight);
-                      WinApi.ShowWindow(nFolderHandle, WinApi.SW_SHOW);
+                    Thread.Sleep(100);
+                    WinApi.ShowWindow(nFolderHandle, WinApi.SW_SHOW);
+
                   //  ResizeConsole(tbFolder.Handle, nFolderHandle,0, tbControl, 0);
               }
            }
