@@ -225,21 +225,24 @@ namespace VM_Viewer {
             }
 
             if(_sVM_Path == "") {//Try to get regkey
-                string _sKey = fGetRegKey();
-                if(_sKey.Length > 12) {///"vmplayer.exe".length
-                    int _nBegin = _sKey.IndexOf('"')+1;
-                    int _nEnd = _sKey.IndexOf('"',_nBegin );
-                    if(_nBegin != -1 && _nEnd != -1) {
-                        string _sResult = _sKey.Substring(_nBegin,_nEnd- _nBegin);
-                        try { 
-                        if(File.Exists(_sResult)) {
-                            _sVM_Path = _sResult;
-                        }else{
-                            if(_sKey != "") { fOut(null, "Unable to use RegKey: " +_sVM_Path );}
+                try { 
+                    string _sKey = fGetRegKey();
+                    if(_sKey.Length > 12) {///"vmplayer.exe".length
+                
+                        int _nBegin = _sKey.IndexOf('"')+1;
+                        int _nEnd = _sKey.IndexOf('"',_nBegin );
+                        if(_nBegin != -1 && _nEnd != -1) {
+                    
+                            string _sResult = _sKey.Substring(_nBegin,_nEnd- _nBegin);
+                            if(File.Exists(_sResult)) {
+                                _sVM_Path = _sResult;
+                            }else{
+                                if(_sKey != "") { fOut(null, "Unable to use RegKey: " +_sVM_Path );}
+                            }
+                  
                         }
-                        }catch(Exception e) { }
                     }
-                }
+                }catch(Exception e) { fOut(null, "Error finding VM Registry:" + e.Message); }
             }
 
             if(_sVM_Path == "" && _bDialog) {
