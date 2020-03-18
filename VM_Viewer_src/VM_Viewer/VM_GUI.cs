@@ -216,7 +216,7 @@ namespace VM_Viewer {
             //Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\vmplayer.exe\shell\open\command
 
 
-                 string _sVM_Path = "";
+             string _sVM_Path = "";
             if(File.Exists(@"C:\Program Files (x86)\VMware\VMware Player\vmplayer.exe")) {
                 _sVM_Path= @"C:\Program Files (x86)\VMware\VMware Player\vmplayer.exe";
             }
@@ -226,13 +226,19 @@ namespace VM_Viewer {
 
             if(_sVM_Path == "") {//Try to get regkey
                 string _sKey = fGetRegKey();
-                int _nBegin = _sKey.IndexOf('"')+1;
-                 int _nEnd = _sKey.IndexOf('"',_nBegin );
-                string _sResult = _sKey.Substring(_nBegin,_nEnd- _nBegin);
-                if(File.Exists(_sResult)) {
-                    _sVM_Path = _sResult;
-                }else{
-                    if(_sKey != "") { fOut(null, "Unable to use RegKey: " +_sVM_Path );}
+                if(_sKey.Length > 12) {///"vmplayer.exe".length
+                    int _nBegin = _sKey.IndexOf('"')+1;
+                    int _nEnd = _sKey.IndexOf('"',_nBegin );
+                    if(_nBegin != -1 && _nEnd != -1) {
+                        string _sResult = _sKey.Substring(_nBegin,_nEnd- _nBegin);
+                        try { 
+                        if(File.Exists(_sResult)) {
+                            _sVM_Path = _sResult;
+                        }else{
+                            if(_sKey != "") { fOut(null, "Unable to use RegKey: " +_sVM_Path );}
+                        }
+                        }catch(Exception e) { }
+                    }
                 }
             }
 
