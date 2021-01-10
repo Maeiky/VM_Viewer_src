@@ -127,11 +127,14 @@ namespace VM_Viewer {
             }else{
                 fStopLaodingLauch();
             }
-
+			this.BeginInvoke((MethodInvoker)delegate {
+				cbPath_TextChanged(null, null); //update listed drive
+			});
         }
 
 
         private void fLauchVMX(string _sPath) {
+
             if(_sPath != "" && !File.Exists(_sPath))
             {
                 fOut(null, "Error >> File not exist: "+  _sPath);
@@ -139,8 +142,7 @@ namespace VM_Viewer {
 
               fStartLaodingLauch();
               sLauched_Path = _sPath;
-
-
+		
             if(_sPath == "" || !cbFullScreen.Checked) { //Normal Mode
                 bFullScreenMode = false;
                 oLauch = new LauchTool();
@@ -178,6 +180,7 @@ namespace VM_Viewer {
                 fOut(null, "Lauch[vmplayer-kvm]: "+  _sPath);
                 oLauch.fLauchExe(sVM_Path + "vmware-kvm.exe", " " + "\""  +_sPath + "\"");
             }
+			
 
             //oLauch.fLauchExe(sVM_Path + "vmplayer-kvm.exe", " " + "\""  +_sPath + "\"");
             //ovftool.exe --lax source.ova destination.vmx
@@ -324,7 +327,7 @@ namespace VM_Viewer {
 
                         ConfigMng.oConfig.fAddRecent(_sPath);
                         fOut(null, "Convert: "+  _sPath);
-                        oConvert.fLauchExe(sVM_Path + @"OVFTool\ovftool.exe", "--lax " + "\""  + _sPath + "\" \"" + _sDest + "\"");
+                        oConvert.fLauchExe(sVM_Path + @"OVFTool\ovftool.exe", "--lax " + "\""  + _sPath + "\" \"" + _sDest + "\"");	
 
                     } else{
                        fLauchVMX(_sDest);
@@ -1233,12 +1236,8 @@ namespace VM_Viewer {
            string _sDir = Path.GetDirectoryName(  cbPath.Text) ;
             if (Directory.Exists(_sDir))
             {
-
                 int _nIndex = 0;
                 int _nFoundIndex = 0;
-
-
-                    
                 foreach (string _sFile in Directory.GetFiles(_sDir, "*.*", SearchOption.TopDirectoryOnly))  {
                  
                 //string supportedExtensions = "*.vmdk,*.vhd,*.vdi,*.img,*.ima,*.raw,*.vfd";
